@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship
 from datetime import datetime
 from database import Base
 
+
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
@@ -20,12 +21,31 @@ class User(Base):
     kendi_hoca_kodu = Column(String, unique=True, nullable=True)
     olusturma_tarihi = Column(DateTime, default=datetime.utcnow)
 
-    teacher_students = relationship("User", foreign_keys=[hoca_id], backref="teacher")
+    # Self-referential: bir öğretmenin öğrencileri
+    teacher_students = relationship(
+        "User",
+        foreign_keys=[hoca_id],
+        primaryjoin="User.hoca_id == User.id",
+        back_populates="teacher",
+    )
+    # Self-referential: öğrencinin öğretmeni (many-to-one tarafı → remote_side zorunlu)
+    teacher = relationship(
+        "User",
+        foreign_keys=[hoca_id],
+        primaryjoin="User.hoca_id == User.id",
+        back_populates="teacher_students",
+        remote_side="User.id",
+    )
+
     dersler = relationship("Ders", back_populates="hoca")
     sorular = relationship("Soru", back_populates="ogrenci")
     bildirimler = relationship("Bildirim", back_populates="hoca")
-    ogrenci_hoca_baglantisi = relationship("OgrenciHoca", foreign_keys="OgrenciHoca.ogrenci_id", back_populates="ogrenci")
-    hoca_baglantisi = relationship("OgrenciHoca", foreign_keys="OgrenciHoca.hoca_id", back_populates="hoca")
+    ogrenci_hoca_baglantisi = relationship(
+        "OgrenciHoca", foreign_keys="OgrenciHoca.ogrenci_id", back_populates="ogrenci"
+    )
+    hoca_baglantisi = relationship(
+        "OgrenciHoca", foreign_keys="OgrenciHoca.hoca_id", back_populates="hoca"
+    )
 
 
 class Ders(Base):
@@ -75,5 +95,9 @@ class OgrenciHoca(Base):
     hoca_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     olusturma_tarihi = Column(DateTime, default=datetime.utcnow)
 
-    ogrenci = relationship("User", foreign_keys=[ogrenci_id], back_populates="ogrenci_hoca_baglantisi")
-    hoca = relationship("User", foreign_keys=[hoca_id], back_populates="hoca_baglantisi")
+    ogrenci = relationship(
+        "User", foreign_keys=[ogrenci_id], back_populates="ogrenci_hoca_baglantisi"
+    )
+    hoca = relationship(
+        "User", foreign_keys=[hoca_id], back_populates="hoca_baglantisi"
+    )
