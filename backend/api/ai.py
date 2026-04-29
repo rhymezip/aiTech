@@ -37,7 +37,30 @@ def get_current_user_fast(credentials: HTTPAuthorizationCredentials = Depends(HT
     return user
 
 
-async def call_openrouter(user_message, system_prompt="", temperature=0.7, max_tokens=1000, user_lang="tr"):
+def _strip_markdown(text: str) -> str:
+    """Remove common markdown formatting characters from AI responses."""
+    # Remove headers (## Başlık → Başlık)
+    text = re.sub(r'^#{1,6}\s+', '', text, flags=re.MULTILINE)
+    # Remove bold/italic (**text** or *text* or __text__ or _text_)
+    text = re.sub(r'\*{1,3}(.+?)\*{1,3}', r'\1', text)
+    text = re.sub(r'_{1,3}(.+?)_{1,3}', r'\1', text)
+    # Remove bullet lists (- item or * item → keep item)
+    text = re.sub(r'^\s*[-*]\s+', '', text, flags=re.MULTILINE)
+    # Remove numbered lists (1. item → keep item)
+    text = re.sub(r'^\s*\d+\.\s+', '', text, flags=re.MULTILINE)
+    # Remove code blocks (```code```) but keep content
+    text = re.sub(r'```[a-z]*\n?(.*?)```', r'\1', text, flags=re.DOTALL)
+    text = re.sub(r'`(.+?)`', r'\1', text)
+    # Remove horizontal rules
+    text = re.sub(r'^[-*_]{3,}\s*$', '', text, flags=re.MULTILINE)
+    # Remove table pipes
+    text = re.sub(r'\|', ' ', text)
+    # Collapse multiple blank lines to one
+    text = re.sub(r'\n{3,}', '\n\n', text)
+    return text.strip()
+
+
+async def call_openrouter(user_message, system_prompt="", temperature=0.7, max_tokens=1000, user_lang="tr", strip_markdown=False):
     if not API_KEY:
         return ERROR_MSGS.get(user_lang, ERROR_MSGS["tr"])["ai_no_key"]
     try:
@@ -63,7 +86,10 @@ async def call_openrouter(user_message, system_prompt="", temperature=0.7, max_t
                 },
             )
             resp.raise_for_status()
-            return resp.json()["choices"][0]["message"]["content"].strip()
+            result = resp.json()["choices"][0]["message"]["content"].strip()
+            if strip_markdown:
+                result = _strip_markdown(result)
+            return result
     except Exception as e:
         error_msg = str(e)
         msgs = ERROR_MSGS.get(user_lang, ERROR_MSGS["tr"])
@@ -193,6 +219,7 @@ STUDENT_AI_PROMPTS = {
         "prev_conversation": "Önceki sorular ve cevaplar:",
         "question_prefix": "Soru",
         "answer_prefix": "Cevap",
+        "no_markdown_rule": "ÖNEMLİ: Cevaplarında kesinlikle markdown formatlama kullanma. Yıldız (*), kare (#), alt çizgi (_), tire listesi, tablo gibi hiçbir karakter kullanma. Sadece düz, sade metin yaz. Sanki bir arkadaşına mesaj atıyormuş gibi doğal ve samimi bir dil kullan.",
     },
     "en": {
         "name": "AI Mentor",
@@ -206,6 +233,7 @@ STUDENT_AI_PROMPTS = {
         "prev_conversation": "Previous questions and answers:",
         "question_prefix": "Question",
         "answer_prefix": "Answer",
+        "no_markdown_rule": "IMPORTANT: Never use markdown formatting in your responses. No asterisks (*), hashes (#), underscores (_), bullet dashes, or tables. Write only plain, natural text as if messaging a friend.",
     },
     "tk": {
         "name": "AI Mentor",
@@ -219,6 +247,7 @@ STUDENT_AI_PROMPTS = {
         "prev_conversation": "Öňki soraglar we jogaplar:",
         "question_prefix": "Sorag",
         "answer_prefix": "Jogap",
+        "no_markdown_rule": "MÖHÜM: Jogaplaryňyzda markdown formatlamasyny ulanmaň. Ýyldyz (*), kare (#), alt çyzgy (_), sanaw, tablolar ýaly hiç bir nyşan ulanmaň. Diňe sade, düz tekst ýazyň. Dost bilen habar iberiýän ýaly tebigy we samimi dil ulanmaň.",
     },
     "zh": {
         "name": "AI导师",
@@ -232,6 +261,7 @@ STUDENT_AI_PROMPTS = {
         "prev_conversation": "之前的问答：",
         "question_prefix": "问题",
         "answer_prefix": "答案",
+        "no_markdown_rule": "重要：回复中绝对不要使用Markdown格式。不要使用星号(*)、井号(#)、下划线(_)、列表破折号或表格。只使用纯文本，像给朋友发消息一样自然。",
     },
     "ko": {
         "name": "AI 멘토",
@@ -245,6 +275,7 @@ STUDENT_AI_PROMPTS = {
         "prev_conversation": "이전 질문과 답변:",
         "question_prefix": "질문",
         "answer_prefix": "답변",
+        "no_markdown_rule": "중요: 답변에 절대로 마크다운 형식을 사용하지 마세요. 별표(*), 해시(#), 밑줄(_), 목록 대시, 표 등 어떤 문자도 사용하지 마세요. 친구에게 메시지를 보내듯 자연스럽고 순수한 텍스트만 작성하세요.",
     },
     "ja": {
         "name": "AIメンター",
@@ -258,6 +289,7 @@ STUDENT_AI_PROMPTS = {
         "prev_conversation": "過去の質問と回答:",
         "question_prefix": "質問",
         "answer_prefix": "回答",
+        "no_markdown_rule": "重要：回答でマークダウン形式を絶対に使わないでください。アスタリスク(*)、ハッシュ(#)、アンダースコア(_)、リスト、テーブルなどは一切使わないでください。友達にメッセージを送るように自然で純粋なテキストのみ書いてください。",
     },
     "pt": {
         "name": "Mentor IA",
@@ -271,6 +303,7 @@ STUDENT_AI_PROMPTS = {
         "prev_conversation": "Perguntas e respostas anteriores:",
         "question_prefix": "Pergunta",
         "answer_prefix": "Resposta",
+        "no_markdown_rule": "IMPORTANTE: Nunca use formatação markdown nas suas respostas. Sem asteriscos (*), cerquilhas (#), underscores (_), listas ou tabelas. Escreva apenas texto simples e natural, como se estivesse enviando uma mensagem para um amigo.",
     },
     "ru": {
         "name": "ИИ Наставник",
@@ -284,6 +317,7 @@ STUDENT_AI_PROMPTS = {
         "prev_conversation": "Предыдущие вопросы и ответы:",
         "question_prefix": "Вопрос",
         "answer_prefix": "Ответ",
+        "no_markdown_rule": "ВАЖНО: Никогда не используйте форматирование markdown в ответах. Без звёздочек (*), решёток (#), подчёркиваний (_), списков и таблиц. Пишите только простой, естественный текст, как будто отправляете сообщение другу.",
     },
     "fr": {
         "name": "Mentor IA",
@@ -297,6 +331,7 @@ STUDENT_AI_PROMPTS = {
         "prev_conversation": "Questions et réponses précédentes:",
         "question_prefix": "Question",
         "answer_prefix": "Réponse",
+        "no_markdown_rule": "IMPORTANT : N'utilisez jamais de formatage markdown dans vos réponses. Pas d'astérisques (*), de dièses (#), de traits de soulignement (_), de listes ou de tableaux. Écrivez uniquement du texte simple et naturel, comme si vous envoyiez un message à un ami.",
     },
 }
 
@@ -338,7 +373,7 @@ TEACHER_AI_PROMPTS = {
         "no_lessons": "henüz ders ýok",
         "difficult_topics": "Kynlykly Meseleler",
         "no_data": "Henüz ýeterli maglumat ýok",
-        "rules": "## Jogap Düzgünleri\n- {lang_name} jogap beriň\n- Konkret maslahatlar beriň\n- Markdown format ulanyň\n- Mysal bilen goldaň",
+        "rules": "## Jogap Düzgünleri\n- {lang_name} jogap beriň\n- Konkret, pratik maslahatlar beriň\n- Açyk we sada dil ulanmaň\n- Mysal bilen goldaň",
         "request": "## Talap",
     },
     "zh": {
@@ -493,9 +528,9 @@ async def detect_understanding(soru: str, tema: str, prev_sorular: list, prev_co
         parsed = json.loads(clean)
         val = parsed.get("anlamadi")
         if val is True:
-            return False
+            return False   # anlamadi=true → öğrenci ANLAMADI → anladi_mi=False
         if val is False:
-            return True
+            return True    # anlamadi=false → öğrenci ANLADI → anladi_mi=True
         return None
     except:
         return _rule_based_detect(soru, prev_count, user_lang)
@@ -605,15 +640,22 @@ async def ask_question(data: SoruRequest, db: Session = Depends(get_db), cu: Use
         elif anladim_sayisi > anlamadim_sayisi:
             anlama_seviyesi = "iyi"
 
-    system_prompt = f"""{student_prompts['system_intro'].format(lang_name=lang_name)}
+    no_markdown_rule = student_prompts.get(
+        "no_markdown_rule",
+        "IMPORTANT: Never use markdown formatting. No asterisks (*), hashes (#), underscores (_), dashes, or tables. Plain text only."
+    )
+
+    system_prompt = f"""{no_markdown_rule}
+
+{student_prompts['system_intro'].format(lang_name=lang_name)}
 {student_prompts['task'].format(tema=tema)}
 {student_prompts['profile'].format(student_name=student_name, student_surname=student_surname, tema=tema, prev_count=prev_count, anlama_seviyesi=anlama_seviyesi)}
 {student_prompts['context'].format(conv_context=conv_context, icerik=icerik)}
 {student_prompts['rules'].format(tema=tema, lang_name=lang_name)}
 
-ÖNEMLI: Cevaplarında kesinlikle markdown formatlama kullanma. Yıldız (*), kare (#), alt çizgi (_), tire listesi, tablo gibi hiçbir karakter kullanma. Sadece düz, sade metin yaz. Sanki bir arkadaşına mesaj atıyormuş gibi doğal ve samimi bir dil kullan."""
+{no_markdown_rule}"""
 
-    answer = await call_openrouter(data.soru, system_prompt, user_lang=user_lang)
+    answer = await call_openrouter(data.soru, system_prompt, user_lang=user_lang, strip_markdown=True)
 
     prev_questions = [msg['soru'] for msg in prev_texts]
     auto_anladi = await detect_understanding(

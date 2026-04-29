@@ -479,7 +479,7 @@ import { onMount } from 'svelte';
                   {#if !notif.goruldu}
                     <button class="btn-okudum" onclick={() => markRead(notif.id)}>{$t.understood}</button>
                   {:else}
-                    <span class="read-label">{$t.copyCodeSuccess}</span>
+                    <span class="read-label">✓ {$t.understood}</span>
                   {/if}
                 </div>
               {/each}
@@ -727,7 +727,7 @@ import { onMount } from 'svelte';
   .notif-konu { font-size:14px; font-weight:500; }
   .notif-desc { font-size:13px; color:#f59e0b; }
   .notif-time { font-size:11px; color:#52525b; }
-  .btn-okudum { background:rgba(34,197,94,.12); border:1px solid rgba(34,197,94,.3); padding:6px 12px; border-radius:6px; color:#22c55e; font-size:12px; cursor:pointer; transition:all .2s; flex-shrink:0; }
+  .btn-okudum { background:rgba(34,197,94,.12); border:1px solid rgba(34,197,94,.3); padding:10px 18px; border-radius:8px; color:#22c55e; font-size:14px; cursor:pointer; transition:all .2s; flex-shrink:0; min-width:80px; }
   .btn-okudum:hover { background:rgba(34,197,94,.2); }
   .read-label { color:#22c55e; font-size:16px; flex-shrink:0; }
 
