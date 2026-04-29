@@ -52,16 +52,20 @@ def login(data: LoginRequest, db: Session = Depends(get_db)):
 
 @router.post("/reset-password")
 def reset_password(data: ResetPasswordRequest, db: Session = Depends(get_db)):
+    login_clean = (data.login or "").strip().lower()
     ozel_kod = data.ozel_kod.strip()
     new_password = data.new_password
     
-    if not ozel_kod or not new_password:
+    if not login_clean or not ozel_kod or not new_password:
         raise HTTPException(status_code=400, detail=get_error("code_and_password_required"))
     
     if len(new_password) < 6:
         raise HTTPException(status_code=400, detail=get_error("password_min_length"))
     
-    user = db.query(User).filter(User.ozel_kod == ozel_kod).first()
+    user = db.query(User).filter(
+        User.login == login_clean,
+        User.ozel_kod == ozel_kod
+    ).first()
     if not user:
         raise HTTPException(status_code=404, detail=get_error("invalid_ozel_kod"))
     

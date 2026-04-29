@@ -188,8 +188,8 @@ STUDENT_AI_PROMPTS = {
         "task": "## Görevin\nÖğrenciye '{tema}' konusunu öğretmek.",
         "profile": "## Öğrenci Profili\n- İsim: {student_name} {student_surname}\n- Ders: {tema}\n- Bu dersteki toplam soru sayısı: {prev_count}\n- Tahmin edilen anlama seviyesi: {anlama_seviyesi}",
         "context": "## Bağlam\n{conv_context}Ders içeriği:\n{icerik}",
-        "rules": "## Yanıt Kuralları\n1. Soruyu dikkatle oku\n2. Soru '{tema}' dışındaysa: konu dışı olduğunu belirt\n3. Kısa, net yanıt ver\n4. Öğrenciyi düşünmeye teşvik et\n5. {lang_name} yanıt ver",
-        "out_of_topic": "Bu soru '{tema}' konusuyla ilgili değil. Başka sorularınızı yanıtlamaktan mutluluk duyarım.",
+        "rules": "YANIT KURALLARI:\n- Sade, samimi, doğal bir dille yaz. Hiç markdown kullanma: yıldız (*), kare (#), tire listesi (-), tablo (|) gibi hiçbir formatlama karakteri kullanma.\n- Düz paragraf yaz.\n- Soru '{tema}' konusuyla tamamen alakasızsa, bunu dostane bir şekilde belirt ve konuya yönlendir. Alakalıysa veya öğrenci seninle sohbet ediyorsa normal konuş.\n- Uzun ve karmaşık cevaplar verme. Kısa, anlaşılır tut.\n- {lang_name} kullan.",
+        "out_of_topic": "Bu soru şu an çalıştığımız '{tema}' konusundan biraz uzak. O konuyla ilgili bir şeyler sormak istersen yardımcı olmaktan memnuniyet duyarım.",
         "prev_conversation": "Önceki sorular ve cevaplar:",
         "question_prefix": "Soru",
         "answer_prefix": "Cevap",
@@ -201,8 +201,8 @@ STUDENT_AI_PROMPTS = {
         "task": "## Your Task\nTeach the student about '{tema}'.",
         "profile": "## Student Profile\n- Name: {student_name} {student_surname}\n- Lesson: {tema}\n- Total questions in this lesson: {prev_count}\n- Estimated understanding level: {anlama_seviyesi}",
         "context": "## Context\n{conv_context}Lesson content:\n{icerik}",
-        "rules": "## Response Rules\n1. Read the question carefully\n2. If the question is unrelated to '{tema}': indicate it's off-topic\n3. Give a short, clear answer\n4. Encourage the student to think\n5. Respond in {lang_name}",
-        "out_of_topic": "This question is not related to '{tema}'. I'll be happy to answer your other questions.",
+        "rules": "RESPONSE RULES:\n- Write in plain, natural, conversational language. No markdown: no asterisks (*), no hashes (#), no bullet dashes (-), no tables (|).\n- Write in plain paragraphs.\n- If the question is completely unrelated to '{tema}', mention it gently and redirect. If it's related or the student is just chatting, respond naturally.\n- Keep answers short and clear.\n- Use {lang_name}.",
+        "out_of_topic": "That question is a bit outside our current topic of '{tema}'. Feel free to ask anything related to it!",
         "prev_conversation": "Previous questions and answers:",
         "question_prefix": "Question",
         "answer_prefix": "Answer",
@@ -312,7 +312,7 @@ TEACHER_AI_PROMPTS = {
         "no_lessons": "henüz ders yok",
         "difficult_topics": "Zorlayıcı Konular",
         "no_data": "Henüz yeterli veri yok",
-        "rules": "## Yanıt Kuralları\n- {lang_name} yanıt ver\n- Somut öneriler ver\n- Markdown format kullan\n- Örneklerle destekle",
+        "rules": "YANIT KURALLARI:\n- {lang_name} yanıt ver\n- Somut, pratik öneriler ver\n- Sade dil kullan, tablo veya karmaşık format kullanma\n- Örneklerle destekle",
         "request": "## Talep",
     },
     "en": {
@@ -325,7 +325,7 @@ TEACHER_AI_PROMPTS = {
         "no_lessons": "no lessons yet",
         "difficult_topics": "Difficult Topics",
         "no_data": "Not enough data yet",
-        "rules": "## Response Rules\n- Respond in {lang_name}\n- Give concrete suggestions\n- Use Markdown format\n- Support with examples",
+        "rules": "RESPONSE RULES:\n- Respond in {lang_name}\n- Give concrete, practical suggestions\n- Use plain language, no tables or complex formatting\n- Support with examples",
         "request": "## Request",
     },
     "tk": {
@@ -609,7 +609,9 @@ async def ask_question(data: SoruRequest, db: Session = Depends(get_db), cu: Use
 {student_prompts['task'].format(tema=tema)}
 {student_prompts['profile'].format(student_name=student_name, student_surname=student_surname, tema=tema, prev_count=prev_count, anlama_seviyesi=anlama_seviyesi)}
 {student_prompts['context'].format(conv_context=conv_context, icerik=icerik)}
-{student_prompts['rules'].format(tema=tema, lang_name=lang_name)}"""
+{student_prompts['rules'].format(tema=tema, lang_name=lang_name)}
+
+ÖNEMLI: Cevaplarında kesinlikle markdown formatlama kullanma. Yıldız (*), kare (#), alt çizgi (_), tire listesi, tablo gibi hiçbir karakter kullanma. Sadece düz, sade metin yaz. Sanki bir arkadaşına mesaj atıyormuş gibi doğal ve samimi bir dil kullan."""
 
     answer = await call_openrouter(data.soru, system_prompt, user_lang=user_lang)
 

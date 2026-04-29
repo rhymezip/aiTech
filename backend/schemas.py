@@ -43,6 +43,7 @@ class AiMessageRequest(BaseModel):
 
 
 class ResetPasswordRequest(BaseModel):
+    login: str
     ozel_kod: str
     new_password: str
 
