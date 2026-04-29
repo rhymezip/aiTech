@@ -71,6 +71,7 @@ import { onMount } from 'svelte';
 
   let unreadCount   = $derived(notifications.filter(n => !n.goruldu).length);
   let attentionList = $derived(notifications.filter(n => n.yuzde >= 15));
+  let attentionSeen = $state(false);
 
   let copySuccess = $state(false);
 
@@ -272,8 +273,8 @@ import { onMount } from 'svelte';
         <button class="tab-btn" class:active={activeTab === 'students'} onclick={() => activeTab = 'students'}>
           👨‍🎓 {$t.teacherDashboardStudents} {#if students.length}<span class="count">{students.length}</span>{/if}
         </button>
-        <button class="tab-btn" class:active={activeTab === 'attention'} onclick={() => activeTab = 'attention'}>
-          ⚠️ {$t.attention} {#if attentionList.length}<span class="count warn">{attentionList.length}</span>{/if}
+        <button class="tab-btn" class:active={activeTab === 'attention'} onclick={() => { activeTab = 'attention'; attentionSeen = true; }}>
+          ⚠️ {$t.attention} {#if attentionList.length && !attentionSeen}<span class="count warn">{attentionList.length}</span>{/if}
         </button>
         <button class="tab-btn" class:active={activeTab === 'notifs'} onclick={() => { activeTab = 'notifs'; }}>
           🔔 {$t.notifications} {#if unreadCount}<span class="count alert">{unreadCount}</span>{/if}
