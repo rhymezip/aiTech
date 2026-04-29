@@ -1,4 +1,5 @@
 <script>
+  import { get } from 'svelte/store';
   import { onMount } from 'svelte';
   import { apiUrl, setAuth } from '../stores/auth.js';
 import { t } from '../stores/i18n.js';
@@ -24,10 +25,10 @@ import LanguageSelector from '../components/LanguageSelector.svelte';
     forgotError = '';
     forgotSuccess = false;
     
-    if (!forgotKod.trim()) { forgotError = $t.enterCode; return; }
-    if (!forgotNewPass.trim()) { forgotError = $t.passwordPlaceholder; return; }
-    if (forgotNewPass.length < 6) { forgotError = $t.registerErrorPasswordLength; return; }
-    if (forgotNewPass !== forgotConfirmPass) { forgotError = $t.registerErrorPasswordMismatch; return; }
+    if (!forgotKod.trim()) { forgotError = get(t).enterCode; return; }
+    if (!forgotNewPass.trim()) { forgotError = get(t).passwordPlaceholder; return; }
+    if (forgotNewPass.length < 6) { forgotError = get(t).registerErrorPasswordLength; return; }
+    if (forgotNewPass !== forgotConfirmPass) { forgotError = get(t).registerErrorPasswordMismatch; return; }
     
     forgotLoading = true;
     try {
@@ -41,9 +42,9 @@ import LanguageSelector from '../components/LanguageSelector.svelte';
         forgotSuccess = true;
         setTimeout(() => { showForgot = false; forgotKod = ''; forgotNewPass = ''; forgotConfirmPass = ''; }, 2000);
       } else {
-        forgotError = data.detail || $t.error;
+        forgotError = data.detail || get(t).error;
       }
-    } catch { forgotError = $t.serverError; }
+    } catch { forgotError = get(t).serverError; }
     finally { forgotLoading = false; }
   }
 
@@ -67,7 +68,7 @@ import LanguageSelector from '../components/LanguageSelector.svelte';
     e.preventDefault();
     error = '';
     if (userCaptcha.toUpperCase() !== captcha) {
-      error = $t.captchaError;
+      error = get(t).captchaError;
       generateCaptcha();
       return;
     }
@@ -82,11 +83,11 @@ import LanguageSelector from '../components/LanguageSelector.svelte';
       if (data.token) {
         setAuth(data.user, data.token);
       } else {
-        error = data.detail || $t.error;
+        error = data.detail || get(t).error;
         generateCaptcha();
       }
     } catch {
-      error = $t.error;
+      error = get(t).error;
       generateCaptcha();
     } finally {
       loading = false;
@@ -146,8 +147,8 @@ import LanguageSelector from '../components/LanguageSelector.svelte';
   </main>
 
   {#if showForgot}
-  <div class="modal-overlay" onclick={() => showForgot = false}>
-    <div class="forgot-box" onclick={(e) => e.stopPropagation()}>
+  <div class="modal-overlay" role="dialog" aria-modal="true" onclick={() => showForgot = false} onkeydown={(e) => e.key === 'Escape' && (showForgot = false)} tabindex="-1">
+    <div class="forgot-box" role="document" onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.stopPropagation()}>
       <button class="close-btn" onclick={() => showForgot = false}>✕</button>
       <h2>{$t.forgotPassword}</h2>
       <p class="sub">{$t.forgotPasswordDesc}</p>

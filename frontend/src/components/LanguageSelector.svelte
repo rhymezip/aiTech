@@ -1,4 +1,5 @@
 <script>
+  import { get } from 'svelte/store';
   import { currentLang, languages } from '../stores/i18n.js';
   import { authFetch, apiUrl } from '../stores/auth.js';
 
@@ -17,7 +18,7 @@
         body: JSON.stringify({ dil: code }),
       });
     } catch (e) {
-      console.error($t.error + ':', e);
+      console.error(get(t).error + ':', e);
     }
   }
 

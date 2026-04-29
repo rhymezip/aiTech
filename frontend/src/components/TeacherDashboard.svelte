@@ -1,4 +1,5 @@
 <script>
+  import { get } from 'svelte/store';
 import { onMount } from 'svelte';
   import { apiUrl, authFetch } from '../stores/auth.js';
   import LanguageSelector from '../components/LanguageSelector.svelte';
@@ -63,7 +64,7 @@ import { onMount } from 'svelte';
 
   // AI chat
   let aiMessages = $state([
-    { role: 'assistant', content: $t.aiAssistantWelcome }
+    { role: 'assistant', content: get(t).aiAssistantWelcome }
   ]);
   let aiInput   = $state('');
   let aiLoading = $state(false);
@@ -197,9 +198,9 @@ import { onMount } from 'svelte';
         body: JSON.stringify({ message: msg }),
       });
       const data = await res.json();
-      aiMessages = [...aiMessages, { role: 'assistant', content: data.cevap || $t.error }];
+      aiMessages = [...aiMessages, { role: 'assistant', content: data.cevap || get(t).error }];
     } catch {
-      aiMessages = [...aiMessages, { role: 'assistant', content: $t.serverError }];
+      aiMessages = [...aiMessages, { role: 'assistant', content: get(t).serverError }];
     } finally {
       aiLoading = false;
       setTimeout(scrollAiToBottom, 50);
@@ -541,8 +542,8 @@ import { onMount } from 'svelte';
       </div>
 
       {#if editingLesson}
-        <div class="modal-overlay" onclick={() => editingLesson = null}>
-          <div class="modal" onclick={(e) => e.stopPropagation()}>
+        <div class="modal-overlay" role="dialog" aria-modal="true" onclick={() => editingLesson = null} onkeydown={(e) => e.key === 'Escape' && (editingLesson = null)} tabindex="-1">
+          <div class="modal" role="document" onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.stopPropagation()}>
             <h3>{$t.teacherDashboardEditLesson}</h3>
             <input type="text" placeholder={$t.teacherDashboardLessonTopicPlaceholder} bind:value={editTema} />
             <textarea placeholder={$t.teacherDashboardLessonContentPlaceholder} bind:value={editIcerik}></textarea>

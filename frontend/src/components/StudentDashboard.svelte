@@ -1,4 +1,5 @@
 <script>
+  import { get } from 'svelte/store';
   import { onMount } from 'svelte';
   import { apiUrl, authFetch } from '../stores/auth.js';
 import LanguageSelector from '../components/LanguageSelector.svelte';
@@ -40,9 +41,9 @@ import LanguageSelector from '../components/LanguageSelector.svelte';
   let loadingHistory = $state(false);
 
   function getHistoryToggleText() {
-    const prevLabel = $t.prevSoru;
-    if (showHistory) return $t.historyHide;
-    if (history.length === 0) return $t.historyShowNone;
+    const prevLabel = get(t).prevSoru;
+    if (showHistory) return get(t).historyHide;
+    if (history.length === 0) return get(t).historyShowNone;
     return `▼ ${prevLabel} (${history.length})`;
   }
 
@@ -55,7 +56,7 @@ import LanguageSelector from '../components/LanguageSelector.svelte';
 
   async function addTeacher() {
     addTeacherErr = ''; addTeacherOk = '';
-    if (!addTeacherKod.trim()) { addTeacherErr = $t.enterCode; return; }
+    if (!addTeacherKod.trim()) { addTeacherErr = get(t).enterCode; return; }
     addingTeacher = true;
     try {
       const res  = await authFetch(apiUrl + '/students/add-teacher', {
@@ -69,9 +70,9 @@ import LanguageSelector from '../components/LanguageSelector.svelte';
         await loadTeachers();
         setTimeout(() => { showAddTeacher = false; addTeacherOk = ''; }, 1500);
       } else {
-        addTeacherErr = data.detail || $t.error;
+        addTeacherErr = data.detail || get(t).error;
       }
-    } catch { addTeacherErr = $t.serverError; }
+    } catch { addTeacherErr = get(t).serverError; }
     finally { addingTeacher = false; }
   }
 
@@ -96,16 +97,16 @@ import LanguageSelector from '../components/LanguageSelector.svelte';
       });
       const data = await res.json();
       if (res.ok) {
-        removeTeacherOk = $t.teacherRemoved;
+        removeTeacherOk = get(t).teacherRemoved;
         setTimeout(() => {
           showRemoveConfirm = false;
           removingTeacher = null;
           loadTeachers();
         }, 1000);
       } else {
-        removeTeacherErr = data.detail || $t.error;
+        removeTeacherErr = data.detail || get(t).error;
       }
-    } catch { removeTeacherErr = $t.serverError; }
+    } catch { removeTeacherErr = get(t).serverError; }
   }
 
   function cancelRemove() {
@@ -148,7 +149,7 @@ import LanguageSelector from '../components/LanguageSelector.svelte';
     showHistory    = false;
     const greetHello = user?.ad ? `${user.ad}, ` : '';
     chatMessages   = [
-      { role: 'assistant', content: `${greetHello}"${l.tema}" ${$t.aboutTopic} ${$t.aiAssistant}. ${$t.enterQuestion} 🎓` }
+      { role: 'assistant', content: `${greetHello}"${l.tema}" ${get(t).aboutTopic} ${get(t).aiAssistant}. ${get(t).enterQuestion} 🎓` }
     ];
     loadHistory(l.id);
   }
@@ -198,10 +199,10 @@ import LanguageSelector from '../components/LanguageSelector.svelte';
         body: JSON.stringify({ ders_id: selectedLesson.id, soru: q }),
       });
       const data = await res.json();
-      chatMessages = [...chatMessages, { role: 'assistant', content: data.cevap || $t.error }];
+      chatMessages = [...chatMessages, { role: 'assistant', content: data.cevap || get(t).error }];
       lastSoruId   = data.soru_id || null;
     } catch {
-      chatMessages = [...chatMessages, { role: 'assistant', content: $t.serverError }];
+      chatMessages = [...chatMessages, { role: 'assistant', content: get(t).serverError }];
     } finally {
       chatLoading = false;
       setTimeout(scrollChatBottom, 50);
@@ -216,7 +217,7 @@ import LanguageSelector from '../components/LanguageSelector.svelte';
         method: 'POST',
         body: JSON.stringify({ soru_id: lastSoruId, anladi }),
       });
-      const label = anladi ? $t.copyCodeSuccess + ' ' + $t.understood : '✗ ' + $t.notUnderstood;
+      const label = anladi ? get(t).copyCodeSuccess + ' ' + get(t).understood : '✗ ' + get(t).notUnderstood;
       chatMessages = [...chatMessages, { role: 'system-info', content: label }];
     } catch { feedbackGiven = false; }
     setTimeout(scrollChatBottom, 50);

@@ -1,4 +1,5 @@
 <script>
+  import { get } from 'svelte/store';
   import { onMount } from 'svelte';
   import { apiUrl } from '../stores/auth.js';
   import LanguageSelector from '../components/LanguageSelector.svelte';
@@ -90,12 +91,12 @@
 
   async function handleSubmit() {
     error = '';
-    if (userCaptcha.toUpperCase() !== captcha) { error = $t.registerErrorCaptcha; generateCaptcha(); return; }
-    if (password !== confirmPass) { error = $t.registerErrorPasswordMismatch; return; }
-    if (password.length < 6) { error = $t.registerErrorPasswordLength; return; }
-    if (!loginName.trim()) { error = $t.registerErrorUsernameEmpty; return; }
-    if (loginName.length < 3) { error = $t.registerErrorUsernameLength; return; }
-    if (!/^[a-zA-Z0-9_]+$/.test(loginName)) { error = $t.registerErrorUsernameInvalid; return; }
+    if (userCaptcha.toUpperCase() !== captcha) { error = get(t).registerErrorCaptcha; generateCaptcha(); return; }
+    if (password !== confirmPass) { error = get(t).registerErrorPasswordMismatch; return; }
+    if (password.length < 6) { error = get(t).registerErrorPasswordLength; return; }
+    if (!loginName.trim()) { error = get(t).registerErrorUsernameEmpty; return; }
+    if (loginName.length < 3) { error = get(t).registerErrorUsernameLength; return; }
+    if (!/^[a-zA-Z0-9_]+$/.test(loginName)) { error = get(t).registerErrorUsernameInvalid; return; }
 
     loading = true;
     try {
@@ -117,11 +118,11 @@
         ozelKod = data.ozel_kod;
         goToStep(3);
       } else {
-        error = data.detail || $t.registerFailed;
+        error = data.detail || get(t).registerFailed;
         generateCaptcha();
       }
     } catch {
-      error = $t.serverError;
+      error = get(t).serverError;
       generateCaptcha();
     } finally {
       loading = false;
