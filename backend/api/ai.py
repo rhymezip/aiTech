@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from database import get_db
 from models import User, Ders, Soru, Bildirim, OgrenciHoca
@@ -23,10 +24,7 @@ def get_user_lang(user) -> str:
 
 
 def get_current_user_fast(credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer()), db: Session = Depends(get_db)):
-    from jose import jwt, JWTError
-    from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-    from fastapi import Depends
-
+    from jose import jwt
     try:
         payload = jwt.decode(credentials.credentials, SECRET_KEY, algorithms=["HS256"])
         uid = int(payload["sub"])
@@ -37,10 +35,6 @@ def get_current_user_fast(credentials: HTTPAuthorizationCredentials = Depends(HT
     if not user:
         raise HTTPException(status_code=401, detail=get_error("user_not_found"))
     return user
-
-
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from fastapi import Depends
 
 
 async def call_openrouter(user_message, system_prompt="", temperature=0.7, max_tokens=1000, user_lang="tr"):
