@@ -350,12 +350,19 @@ def get_teacher_students(db: Session = Depends(get_db), cu: User = Depends(get_c
         ogr = db.query(User).filter(User.id == row.ogrenci_id).first()
         if not ogr:
             continue
+        try:
+            ad = decrypt_data(ogr.ad_encrypted)
+            soyad = decrypt_data(ogr.soyad_encrypted)
+        except Exception as e:
+            print(f"[WARN] decrypt failed for user {ogr.id}: {e}")
+            ad = "???"
+            soyad = "???"
         sorular = db.query(Soru).filter(Soru.ogrenci_id == ogr.id).count()
         anlamadi = db.query(Soru).filter(Soru.ogrenci_id == ogr.id, Soru.anladi_mi == False).count()
         result.append({
             "id": ogr.id,
-            "ad": decrypt_data(ogr.ad_encrypted),
-            "soyad": decrypt_data(ogr.soyad_encrypted),
+            "ad": ad,
+            "soyad": soyad,
             "telefon": ogr.telefon,
             "toplam_soru": sorular,
             "anlamadi_sayi": anlamadi,

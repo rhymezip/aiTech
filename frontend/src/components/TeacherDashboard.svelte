@@ -93,12 +93,18 @@ import { onMount } from 'svelte';
   async function loadStudents() {
     try {
       const res  = await authFetch(apiUrl + '/teacher/students');
+      if (!res.ok) {
+        console.error('loadStudents API error:', res.status, await res.text());
+        return;
+      }
       const data = await res.json();
       if (data.students) {
         students = data.students;
         filteredStudents = data.students;
       }
-    } catch { /* keep existing */ }
+    } catch (e) {
+      console.error('loadStudents failed:', e);
+    }
   }
 
   async function loadNotifications() {
@@ -152,6 +158,7 @@ import { onMount } from 'svelte';
     try {
       await authFetch(apiUrl + '/teacher/students/' + id, { method: 'DELETE' });
       students = students.filter(s => s.id !== id);
+      filteredStudents = filteredStudents.filter(s => s.id !== id);
       confirmDeleteStudent = null;
     } catch {}
   }
