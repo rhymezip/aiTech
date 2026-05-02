@@ -30,7 +30,7 @@ def get_current_user_fast(credentials: HTTPAuthorizationCredentials = Depends(HT
         uid = int(payload["sub"])
     except:
         raise HTTPException(status_code=401, detail=get_error("invalid_token"))
-    
+
     user = db.query(User).filter(User.id == uid).first()
     if not user:
         raise HTTPException(status_code=401, detail=get_error("user_not_found"))
@@ -45,17 +45,17 @@ def check_notification_threshold(db, ders_id, hoca_id):
     yuzde = int(anlamadi / total * 100)
     if yuzde < 15:
         return
-    
+
     ders = db.query(Ders).filter(Ders.id == ders_id).first()
     if not ders:
         return
-    
+
     from errors import ERROR_MSGS
     existing = db.query(Bildirim).filter(
         Bildirim.hoca_id == hoca_id,
         Bildirim.konu_encrypted == ders.tema_encrypted
     ).first()
-    
+
     if existing:
         existing.yuzde = yuzde
         existing.goruldu = False
@@ -73,7 +73,7 @@ def get_lessons(db: Session = Depends(get_db), cu: User = Depends(get_current_us
     lang = get_user_lang(cu)
     if cu.role != "teacher":
         raise HTTPException(status_code=403, detail=get_error("unauthorized", lang))
-    
+
     lessons = db.query(Ders).filter(Ders.hoca_id == cu.id).order_by(Ders.olusturma_tarihi.desc()).all()
     result = []
     for l in lessons:
@@ -96,7 +96,7 @@ def create_lesson(data: DersRequest, db: Session = Depends(get_db), cu: User = D
     lang = get_user_lang(cu)
     if cu.role != "teacher":
         raise HTTPException(status_code=403, detail=get_error("unauthorized", lang))
-    
+
     lesson = Ders(
         hoca_id=cu.id,
         tema_encrypted=encrypt_data(data.tema.strip()),
@@ -124,16 +124,16 @@ def update_lesson(lesson_id: int, data: DersUpdateRequest, db: Session = Depends
     lang = get_user_lang(cu)
     if cu.role != "teacher":
         raise HTTPException(status_code=403, detail=get_error("unauthorized", lang))
-    
+
     lesson = db.query(Ders).filter(Ders.id == lesson_id, Ders.hoca_id == cu.id).first()
     if not lesson:
         raise HTTPException(status_code=404, detail=get_error("lesson_not_found", lang))
-    
+
     if data.tema is not None:
         lesson.tema_encrypted = encrypt_data(data.tema.strip())
     if data.icerik is not None:
         lesson.icerik_encrypted = encrypt_data(data.icerik.strip()) if data.icerik.strip() else None
-    
+
     db.commit()
     return {"message": get_error("lesson_updated", lang)}
 
@@ -143,7 +143,7 @@ def get_notifications(db: Session = Depends(get_db), cu: User = Depends(get_curr
     lang = get_user_lang(cu)
     if cu.role != "teacher":
         raise HTTPException(status_code=403, detail=get_error("unauthorized", lang))
-    
+
     notifs = db.query(Bildirim).filter(Bildirim.hoca_id == cu.id).order_by(Bildirim.timestamp.asc()).all()
     return {
         "notifications": [{
@@ -172,7 +172,7 @@ def teacher_stats(db: Session = Depends(get_db), cu: User = Depends(get_current_
     lang = get_user_lang(cu)
     if cu.role != "teacher":
         raise HTTPException(status_code=403, detail=get_error("unauthorized", lang))
-    
+
     ogrenciler = db.query(OgrenciHoca).filter(OgrenciHoca.hoca_id == cu.id).count()
     if ogrenciler == 0:
         ogrenciler = db.query(User).filter(User.hoca_id == cu.id, User.role == "student").count()
@@ -191,7 +191,7 @@ def get_my_teachers(db: Session = Depends(get_db), cu: User = Depends(get_curren
     lang = get_user_lang(cu)
     if cu.role != "student":
         raise HTTPException(status_code=403, detail=get_error("unauthorized", lang))
-    
+
     rows = db.query(OgrenciHoca).filter(OgrenciHoca.ogrenci_id == cu.id).all()
     result = []
     for row in rows:
@@ -213,26 +213,26 @@ def add_teacher(data: AddTeacherRequest, db: Session = Depends(get_db), cu: User
     lang = get_user_lang(cu)
     if cu.role != "student":
         raise HTTPException(status_code=403, detail=get_error("unauthorized", lang))
-    
+
     hoca_kodu = data.hoca_kodu.strip().upper()
     if not hoca_kodu:
         raise HTTPException(status_code=400, detail=get_error("code_required", lang))
-    
+
     hoca = db.query(User).filter(User.kendi_hoca_kodu == hoca_kodu, User.role == "teacher").first()
     if not hoca:
         raise HTTPException(status_code=404, detail=get_error("invalid_code", lang))
-    
+
     already = db.query(OgrenciHoca).filter(
         OgrenciHoca.ogrenci_id == cu.id,
         OgrenciHoca.hoca_id == hoca.id
     ).first()
     if already:
         raise HTTPException(status_code=400, detail=get_error("teacher_already_added", lang))
-    
+
     db.add(OgrenciHoca(ogrenci_id=cu.id, hoca_id=hoca.id))
     cu.hoca_id = hoca.id
     db.commit()
-    
+
     return {
         "message": get_error("teacher_added", lang),
         "hoca": {
@@ -248,19 +248,19 @@ def remove_teacher(hoca_id: int, db: Session = Depends(get_db), cu: User = Depen
     lang = get_user_lang(cu)
     if cu.role != "student":
         raise HTTPException(status_code=403, detail=get_error("unauthorized", lang))
-    
+
     relation = db.query(OgrenciHoca).filter(
         OgrenciHoca.ogrenci_id == cu.id,
         OgrenciHoca.hoca_id == hoca_id
     ).first()
     if not relation:
         raise HTTPException(status_code=404, detail=get_error("teacher_not_found", lang))
-    
+
     db.delete(relation)
     if cu.hoca_id == hoca_id:
         cu.hoca_id = None
     db.commit()
-    
+
     return {"message": get_error("teacher_removed", lang)}
 
 
@@ -269,14 +269,14 @@ def get_teacher_lessons_for_student(hoca_id: int, db: Session = Depends(get_db),
     lang = get_user_lang(cu)
     if cu.role != "student":
         raise HTTPException(status_code=403, detail=get_error("unauthorized", lang))
-    
+
     relation = db.query(OgrenciHoca).filter(
         OgrenciHoca.ogrenci_id == cu.id,
         OgrenciHoca.hoca_id == hoca_id
     ).first()
     if not relation:
         raise HTTPException(status_code=403, detail=get_error("no_teacher_access", lang))
-    
+
     lessons = db.query(Ders).filter(Ders.hoca_id == hoca_id).order_by(Ders.olusturma_tarihi.desc()).all()
     return {
         "lessons": [{
@@ -293,19 +293,19 @@ def set_anladi(data: AnladiRequest, db: Session = Depends(get_db), cu: User = De
     lang = get_user_lang(cu)
     if cu.role != "student":
         raise HTTPException(status_code=403, detail=get_error("unauthorized", lang))
-    
+
     soru = db.query(Soru).filter(Soru.id == data.soru_id, Soru.ogrenci_id == cu.id).first()
     if not soru:
         raise HTTPException(status_code=404, detail=get_error("question_not_found", lang))
-    
+
     soru.anladi_mi = data.anladi
     soru.ai_tahmin = False
     db.commit()
-    
+
     lesson = db.query(Ders).filter(Ders.id == soru.ders_id).first()
     if lesson:
         check_notification_threshold(db, soru.ders_id, lesson.hoca_id)
-    
+
     return {"message": get_error("saved", lang)}
 
 
@@ -314,7 +314,7 @@ def get_history(ders_id: int, db: Session = Depends(get_db), cu: User = Depends(
     lang = get_user_lang(cu)
     if cu.role != "student":
         raise HTTPException(status_code=403, detail=get_error("unauthorized", lang))
-    
+
     sorular = db.query(Soru).filter(Soru.ders_id == ders_id, Soru.ogrenci_id == cu.id).order_by(Soru.timestamp.asc()).all()
     return {
         "history": [{
@@ -343,7 +343,7 @@ def get_teacher_students(db: Session = Depends(get_db), cu: User = Depends(get_c
     lang = get_user_lang(cu)
     if cu.role != "teacher":
         raise HTTPException(status_code=403, detail=get_error("unauthorized", lang))
-    
+
     rows = db.query(OgrenciHoca).filter(OgrenciHoca.hoca_id == cu.id).all()
     seen_ids = set()
     result = []
@@ -380,14 +380,14 @@ def delete_student(ogr_id: int, db: Session = Depends(get_db), cu: User = Depend
     lang = get_user_lang(cu)
     if cu.role != "teacher":
         raise HTTPException(status_code=403, detail=get_error("unauthorized", lang))
-    
+
     relation = db.query(OgrenciHoca).filter(
         OgrenciHoca.hoca_id == cu.id,
         OgrenciHoca.ogrenci_id == ogr_id
     ).first()
     if not relation:
         raise HTTPException(status_code=404, detail=get_error("student_not_found", lang))
-    
+
     db.query(Soru).filter(Soru.ogrenci_id == ogr_id).delete()
     db.query(OgrenciHoca).filter(
         OgrenciHoca.hoca_id == cu.id,

@@ -11,7 +11,7 @@
   async function selectLang(code) {
     currentLang.set(code);
     showDropdown = false;
-    
+
     try {
       await authFetch(apiUrl + '/user/dil', {
         method: 'POST',
