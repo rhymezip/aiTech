@@ -345,8 +345,12 @@ def get_teacher_students(db: Session = Depends(get_db), cu: User = Depends(get_c
         raise HTTPException(status_code=403, detail=get_error("unauthorized", lang))
     
     rows = db.query(OgrenciHoca).filter(OgrenciHoca.hoca_id == cu.id).all()
+    seen_ids = set()
     result = []
     for row in rows:
+        if row.ogrenci_id in seen_ids:
+            continue
+        seen_ids.add(row.ogrenci_id)
         ogr = db.query(User).filter(User.id == row.ogrenci_id).first()
         if not ogr:
             continue

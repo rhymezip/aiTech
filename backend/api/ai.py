@@ -214,7 +214,7 @@ STUDENT_AI_PROMPTS = {
         "task": "## Görevin\nÖğrenciye '{tema}' konusunu öğretmek.",
         "profile": "## Öğrenci Profili\n- İsim: {student_name} {student_surname}\n- Ders: {tema}\n- Bu dersteki toplam soru sayısı: {prev_count}\n- Tahmin edilen anlama seviyesi: {anlama_seviyesi}",
         "context": "## Bağlam\n{conv_context}Ders içeriği:\n{icerik}",
-        "rules": "YANIT KURALLARI:\n- Sade, samimi, doğal bir dille yaz. Hiç markdown kullanma: yıldız (*), kare (#), tire listesi (-), tablo (|) gibi hiçbir formatlama karakteri kullanma.\n- Düz paragraf yaz.\n- Soru '{tema}' konusuyla tamamen alakasızsa, bunu dostane bir şekilde belirt ve konuya yönlendir. Alakalıysa veya öğrenci seninle sohbet ediyorsa normal konuş.\n- Uzun ve karmaşık cevaplar verme. Kısa, anlaşılır tut.\n- {lang_name} kullan.",
+        "rules": "YANIT KURALLARI:\n- Sade, samimi, doğal bir dille yaz. Hiç markdown kullanma: yıldız (*), kare (#), tire listesi (-), tablo (|) gibi hiçbir formatlama karakteri kullanma.\n- Düz paragraf yaz.\n- Soru '{tema}' konusuyla tamamen alakasızsa, bunu dostane bir şekilde belirt ve konuya yönlendir. Alakalıysa veya öğrenci seninle sohbet ediyorsa normal konuş.\n- Uzun ve karmaşık cevaplar verme. Kısa, anlaşılır tut.\n- {lang_name} kullan.\n- Eğer mesaj hakaret, küfür veya uygunsuz ifadeler içeriyorsa kibarca şunu söyle: 'Seninle daha nazik bir şekilde konuşmamı tercih ederim. Sana nasıl yardımcı olabilirim?' Başka hiçbir şey ekleme.",
         "out_of_topic": "Bu soru şu an çalıştığımız '{tema}' konusundan biraz uzak. O konuyla ilgili bir şeyler sormak istersen yardımcı olmaktan memnuniyet duyarım.",
         "prev_conversation": "Önceki sorular ve cevaplar:",
         "question_prefix": "Soru",
@@ -228,7 +228,7 @@ STUDENT_AI_PROMPTS = {
         "task": "## Your Task\nTeach the student about '{tema}'.",
         "profile": "## Student Profile\n- Name: {student_name} {student_surname}\n- Lesson: {tema}\n- Total questions in this lesson: {prev_count}\n- Estimated understanding level: {anlama_seviyesi}",
         "context": "## Context\n{conv_context}Lesson content:\n{icerik}",
-        "rules": "RESPONSE RULES:\n- Write in plain, natural, conversational language. No markdown: no asterisks (*), no hashes (#), no bullet dashes (-), no tables (|).\n- Write in plain paragraphs.\n- If the question is completely unrelated to '{tema}', mention it gently and redirect. If it's related or the student is just chatting, respond naturally.\n- Keep answers short and clear.\n- Use {lang_name}.",
+        "rules": "RESPONSE RULES:\n- Write in plain, natural, conversational language. No markdown: no asterisks (*), no hashes (#), no bullet dashes (-), no tables (|).\n- Write in plain paragraphs.\n- If the question is completely unrelated to '{tema}', mention it gently and redirect. If it's related or the student is just chatting, respond naturally.\n- Keep answers short and clear.\n- Use {lang_name}.\n- If the message contains insults, profanity, or inappropriate language, respond only with: 'I'd prefer if we could speak more respectfully. How can I help you?' Do not add anything else.",
         "out_of_topic": "That question is a bit outside our current topic of '{tema}'. Feel free to ask anything related to it!",
         "prev_conversation": "Previous questions and answers:",
         "question_prefix": "Question",
@@ -242,7 +242,7 @@ STUDENT_AI_PROMPTS = {
         "task": "## Wepalingyň\nOkuwçuya '{tema}' topicsyny öwretmek.",
         "profile": "## Okuwçy Profili\n- At: {student_name} {student_surname}\n- Ders: {tema}\n- Bu dersdeki jemi sorag: {prev_count}\n- Çenli düşünme derejesi: {anlama_seviyesi}",
         "context": "## Kontekst\n{conv_context}Ders mazmuny:\n{icerik}",
-        "rules": "## Jogap Düzgünleri\n1. Soragy diýen ýaly oka\n2. Sorag '{tema}' bilen baglanyşykly dälsa: topicsyzdygyny aýdyň\n3. Gysga, açyk jogap beriň\n4. Okuwçu pikirlenmäge haýyň\n5. {lang_name} jogap beriň",
+        "rules": "## Jogap Düzgünleri\n1. Soragy diýen ýaly oka\n2. Sorag '{tema}' bilen baglanyşykly dälsa: topicsyzdygyny aýdyň\n3. Gysga, açyk jogap beriň\n4. Okuwçu pikirlenmäge haýyň\n5. {lang_name} jogap beriň\n6. Haýyşt ýa-da uygunsuz söz bar bolsa diňe şuny aýt: 'Has sypaýy gepleşmegimizi haýyş edýärin. Size nähili kömek edip bilerin?' Başga hiç zat goşma.",
         "out_of_topic": "Bu sorag '{tema}' bilen baglanyşykly däl. Beýleki soraglaryňyza jogap bermäge begam.",
         "prev_conversation": "Öňki soraglar we jogaplar:",
         "question_prefix": "Sorag",
@@ -256,7 +256,7 @@ STUDENT_AI_PROMPTS = {
         "task": "## 你的任务\n教学生关于'{tema}'。",
         "profile": "## 学生档案\n- 姓名：{student_name} {student_surname}\n- 课程：{tema}\n- 本课问题总数：{prev_count}\n- 估计理解水平：{anlama_seviyesi}",
         "context": "## 上下文\n{conv_context}课程内容：\n{icerik}",
-        "rules": "## 回复规则\n1. 仔细阅读问题\n2. 如果问题与'{tema}'无关：指出偏离主题\n3. 给出简短、清晰的答案\n4. 鼓励学生思考\n5. 使用{lang_name}回复",
+        "rules": "## 回复规则\n1. 仔细阅读问题\n2. 如果问题与'{tema}'无关：指出偏离主题\n3. 给出简短、清晰的答案\n4. 鼓励学生思考\n5. 使用{lang_name}回复\n6. 如果消息包含侮辱、粗话或不当语言，只回复：'我希望我们能更礼貌地交流。我能帮你什么？' 不要添加任何其他内容。",
         "out_of_topic": "这个问题与'{tema}'无关。我很乐意回答您的其他问题。",
         "prev_conversation": "之前的问答：",
         "question_prefix": "问题",
@@ -270,7 +270,7 @@ STUDENT_AI_PROMPTS = {
         "task": "## 당신의 임무\n학생에게 '{tema}' 주제를 가르치는 것입니다.",
         "profile": "## 학생 프로필\n- 이름: {student_name} {student_surname}\n- 수업: {tema}\n- 이 수업의 총 질문 수: {prev_count}\n- 추정 이해 수준: {anlama_seviyesi}",
         "context": "## 맥락\n{conv_context}수업 내용:\n{icerik}",
-        "rules": "## 응답 규칙\n1. 질문을 주의 깊게 읽으세요\n2. 질문이 '{tema}'와 관련 없는 경우: 관련 없다고 명시하세요\n3. 짧고 명확한 답변을 제공하세요\n4. 학생이 생각하도록 격려하세요\n5. {lang_name}로 답변하세요",
+        "rules": "## 응답 규칙\n1. 질문을 주의 깊게 읽으세요\n2. 질문이 '{tema}'와 관련 없는 경우: 관련 없다고 명시하세요\n3. 짧고 명확한 답변을 제공하세요\n4. 학생이 생각하도록 격려하세요\n5. {lang_name}로 답변하세요\n6. 메시지에 욕설, 비속어 또는 부적절한 언어가 포함된 경우 다음만 답하세요: '좀 더 정중하게 대화해 주셨으면 합니다. 어떻게 도와드릴까요?' 다른 내용은 추가하지 마세요.",
         "out_of_topic": "이 질문은 '{tema}'와 관련이 없습니다. 다른 질문에 기꺼이 답변해 드리겠습니다.",
         "prev_conversation": "이전 질문과 답변:",
         "question_prefix": "질문",
@@ -284,7 +284,7 @@ STUDENT_AI_PROMPTS = {
         "task": "## あなたの任務\n学生に'{tema}'のトピックを教えること。",
         "profile": "## 学生プロフィール\n- 名前: {student_name} {student_surname}\n- 授業: {tema}\n- この授業の総質問数: {prev_count}\n- 推定理解レベル: {anlama_seviyesi}",
         "context": "## コンテキスト\n{conv_context}授業内容:\n{icerik}",
-        "rules": "## 返信ルール\n1. 質問を注意深く読んでください\n2. 質問が'{tema}'と無関係な場合：無関係と明記してください\n3. 短く明確な回答をしてください\n4. 学生が考えるよう促してください\n5. {lang_name}で回答してください",
+        "rules": "## 返信ルール\n1. 質問を注意深く読んでください\n2. 質問が'{tema}'と無関係な場合：無関係と明記してください\n3. 短く明確な回答をしてください\n4. 学生が考えるよう促してください\n5. {lang_name}で回答してください\n6. メッセージに侮辱、不適切な言葉が含まれている場合は、次のみ答えてください：'もっと丁寧にお話しいただければ幸いです。何かお手伝いできますか？' 他には何も追加しないでください。",
         "out_of_topic": "この質問は'{tema}'と関連がありません。他の質問にお答えします。",
         "prev_conversation": "過去の質問と回答:",
         "question_prefix": "質問",
@@ -298,7 +298,7 @@ STUDENT_AI_PROMPTS = {
         "task": "## Sua Tarefa\nEnsinar o aluno sobre '{tema}'.",
         "profile": "## Perfil do Aluno\n- Nome: {student_name} {student_surname}\n- Aula: {tema}\n- Total de perguntas nesta aula: {prev_count}\n- Nível de compreensão estimado: {anlama_seviyesi}",
         "context": "## Contexto\n{conv_context}Conteúdo da aula:\n{icerik}",
-        "rules": "## Regras de Resposta\n1. Leia a pergunta com atenção\n2. Se a pergunta não for sobre '{tema}': indique que está fora do tópico\n3. Dê uma resposta curta e clara\n4. Incentive o aluno a pensar\n5. Responda em {lang_name}",
+        "rules": "## Regras de Resposta\n1. Leia a pergunta com atenção\n2. Se a pergunta não for sobre '{tema}': indique que está fora do tópico\n3. Dê uma resposta curta e clara\n4. Incentive o aluno a pensar\n5. Responda em {lang_name}\n6. Se a mensagem contiver insultos, palavrões ou linguagem inadequada, responda apenas com: 'Prefiro que conversemos de forma mais respeitosa. Como posso te ajudar?' Não adicione mais nada.",
         "out_of_topic": "Esta pergunta não está relacionada a '{tema}'. Ficarei feliz em responder suas outras perguntas.",
         "prev_conversation": "Perguntas e respostas anteriores:",
         "question_prefix": "Pergunta",
@@ -312,7 +312,7 @@ STUDENT_AI_PROMPTS = {
         "task": "## Ваша Задача\nОбучать студента теме '{tema}'.",
         "profile": "## Профиль Студента\n- Имя: {student_name} {student_surname}\n- Урок: {tema}\n- Всего вопросов в этом уроке: {prev_count}\n- Предполагаемый уровень понимания: {anlama_seviyesi}",
         "context": "## Контекст\n{conv_context}Содержание урока:\n{icerik}",
-        "rules": "## Правила Ответа\n1. Внимательно прочитайте вопрос\n2. Если вопрос не относится к '{tema}': укажите, что он не по теме\n3. Дайте краткий и четкий ответ\n4. Побуждайте студента думать\n5. Отвечайте на {lang_name}",
+        "rules": "## Правила Ответа\n1. Внимательно прочитайте вопрос\n2. Если вопрос не относится к '{tema}': укажите, что он не по теме\n3. Дайте краткий и четкий ответ\n4. Побуждайте студента думать\n5. Отвечайте на {lang_name}\n6. Если сообщение содержит оскорбления, нецензурную лексику или неуместные выражения, ответьте только: 'Я бы предпочёл, чтобы мы общались более вежливо. Чем могу помочь?' Больше ничего не добавляйте.",
         "out_of_topic": "Этот вопрос не связан с '{tema}'. Буду рад ответить на ваши другие вопросы.",
         "prev_conversation": "Предыдущие вопросы и ответы:",
         "question_prefix": "Вопрос",
@@ -326,7 +326,7 @@ STUDENT_AI_PROMPTS = {
         "task": "## Votre Tâche\nEnseigner à l'élève le sujet '{tema}'.",
         "profile": "## Profil de l'Élève\n- Nom: {student_name} {student_surname}\n- Cours: {tema}\n- Nombre total de questions dans ce cours: {prev_count}\n- Niveau de compréhension estimé: {anlama_seviyesi}",
         "context": "## Contexte\n{conv_context}Contenu du cours:\n{icerik}",
-        "rules": "## Règles de Réponse\n1. Lisez la question attentivement\n2. Si la question n'est pas liée à '{tema}': indiquez qu'elle est hors sujet\n3. Donnez une réponse courte et claire\n4. Encouragez l'élève à réfléchir\n5. Répondez en {lang_name}",
+        "rules": "## Règles de Réponse\n1. Lisez la question attentivement\n2. Si la question n'est pas liée à '{tema}': indiquez qu'elle est hors sujet\n3. Donnez une réponse courte et claire\n4. Encouragez l'élève à réfléchir\n5. Répondez en {lang_name}\n6. Si le message contient des insultes, des grossièretés ou un langage inapproprié, répondez uniquement : 'Je préfère que nous échangions de manière plus respectueuse. Comment puis-je vous aider ?' N'ajoutez rien d'autre.",
         "out_of_topic": "Cette question n'est pas liée à '{tema}'. Je serai heureux de répondre à vos autres questions.",
         "prev_conversation": "Questions et réponses précédentes:",
         "question_prefix": "Question",
@@ -693,7 +693,9 @@ def lesson_breakdown(ders_id: int, db: Session = Depends(get_db), cu: User = Dep
     if not lesson:
         raise HTTPException(status_code=404, detail=get_error("lesson_not_found", lang))
 
-    ogrenciler = db.query(User).filter(User.hoca_id == cu.id, User.role == "student").all()
+    ogr_rows = db.query(OgrenciHoca).filter(OgrenciHoca.hoca_id == cu.id).all()
+    ogr_ids = list(set(r.ogrenci_id for r in ogr_rows))
+    ogrenciler = db.query(User).filter(User.id.in_(ogr_ids), User.role == "student").all()
 
     result = []
     for ogr in ogrenciler:
@@ -756,7 +758,9 @@ async def teacher_ai(data: AiMessageRequest, db: Session = Depends(get_db), cu: 
     ad = decrypt_data(cu.ad_encrypted) if getattr(cu, "ad_encrypted", None) else ""
     soyad = decrypt_data(cu.soyad_encrypted) if getattr(cu, "soyad_encrypted", None) else ""
 
-    ogrenciler = db.query(User).filter(User.hoca_id == cu.id, User.role == "student").all()
+    ogr_rows2 = db.query(OgrenciHoca).filter(OgrenciHoca.hoca_id == cu.id).all()
+    ogr_ids2 = list(set(r.ogrenci_id for r in ogr_rows2))
+    ogrenciler = db.query(User).filter(User.id.in_(ogr_ids2), User.role == "student").all()
     ogrenci_bilgi = []
     for o in ogrenciler:
         sorular = db.query(Soru).filter(Soru.ogrenci_id == o.id).all()

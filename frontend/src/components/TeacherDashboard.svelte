@@ -364,7 +364,7 @@ import { onMount } from 'svelte';
             {:else}
               <!-- Summary bar -->
               {@const topAnlamadi = breakdown.ogrenciler.filter(o => o.anlamadi > 0).length}
-              {@const topAnladi   = breakdown.ogrenciler.filter(o => o.anlamadi === 0 && o.anladi > 0).length}
+              {@const topAnladi   = breakdown.ogrenciler.filter(o => o.anladi > 0).length}
               <div class="summary-bar">
                 <div class="sum-item red">
                   <span class="sum-num">{topAnlamadi}</span>
@@ -386,7 +386,7 @@ import { onMount } from 'svelte';
                   <div class="student-row" class:expanded={expandedStudent === ogr.ogrenci_id}>
                     <button class="student-header" onclick={() => expandedStudent = expandedStudent === ogr.ogrenci_id ? null : ogr.ogrenci_id}>
                       <div class="stu-left">
-                        <div class="stu-avatar" class:red={ogr.anlamadi > 0} class:green={ogr.anlamadi === 0 && ogr.anladi > 0}>
+                        <div class="stu-avatar" class:red={ogr.anlamadi > 0} class:green={ogr.anladi > 0 && ogr.anlamadi === 0}>
                           {ogr.ad[0]}{ogr.soyad[0]}
                         </div>
                         <div class="stu-info">
